@@ -1,4 +1,5 @@
-var display = $('.here')
+var display = $('.stats')
+var currentCity = $('.currentCity') 
 
 
 fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
@@ -17,11 +18,14 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
   .then(function (data) {
     console.log(data);
     console.log(dayjs.unix(1674324000));
-    display.append('<p>' + data.city.name + " " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  " + 'MMM' + " " + "D" + ", " + "YYYY") + '</p>')
-    display.append('<p>' + "Temp: " + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</p>')
-    display.append('<p>' + "Wind: " + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</p>')
-    display.append('<p>' + "Humidity: " + data.list[0].main.humidity + " %" + '</p>')
-    display.append('<p>' + '</p>')
+    display.append('<li>' + data.city.name + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
+    display.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
+    display.append('<li><strong>' + "Wind: </strong>" + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</li>');
+    display.append('<li><strong>' + "Humidity: </strong>" + data.list[0].main.humidity + " %" + '</li>');
+    display.children().addClass("list-group-item text-start");
+    display.children().eq(0).addClass("fs-3 fw-bold");
+    currentCity.text(data.city.name + " ");
+    // display.append('<p>' + '</p>')
 
     // for (i=0;i<data.list.length;i++) {
         
