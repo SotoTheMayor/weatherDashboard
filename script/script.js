@@ -8,7 +8,7 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
   })
   .then(function (data) {
 
-    console.log(data);
+    // console.log(data);
   });
 
   fetch('http://api.openweathermap.org/data/2.5/forecast?lat=45.3038538&lon=-93.5671825&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
@@ -16,7 +16,7 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
     return response.json();
   })
     .then(function (data) {
-    console.log(data);
+    // console.log(data);
     // console.log(dayjs.unix(1674356400));
     display.append('<li>' + data.city.name + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
     display.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
@@ -37,49 +37,80 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
         futureStats.children().addClass("list-group-item text-start smallFont");
     }
 
-    let totalDayOnes = 0;
-    let totalDayTwo = 0;
-    let dayOne = 0;
-    let dayTwo = 0;
+    let dayOneCount = 0;
+    let dayTwoCount = 0;
+    let dayThreeCount = 0;
+    let dayFourCount = 0;
+    let dayFiveCount = 0;
+    let dayOneTemp = 0;
+    let dayOneHum = 0;
+    let dayOneWind = 0;
+    let dayTwoTemp = 0;
+    let dayTwoHum = 0;
+    let dayTwoWind = 0;
+    let dayThreeTemp = 0;
+    let dayThreeHum = 0;
+    let dayThreeWind = 0;
+    let dayFourTemp = 0;
+    let dayFourHum = 0;
+    let dayFourWind = 0;
+    let dayFiveTemp = 0;
+    let dayFiveHum = 0;
+    let dayFiveWind = 0;
     i = 0;
 
-    console.log(data.list.length)
-    console.log("change date test: " + dayjs('2022-12-31').date())
-    console.log("date test: " + dayjs().subtract(21, "day").date())
-    if (dayjs('2022-12-31').date() == dayjs().subtract(21, "day").date()) {
-        console.log("it worked!! " + dayjs('2022-12-31').date() + " -- " + dayjs().subtract(21, "day").date())
-    }
-    console.log(dayjs.unix(data.list[i].dt).subtract(1, "day"))
+    // console.log(data.list.length)
+    // console.log("change date test: " + dayjs('2022-12-31').date())
+    // console.log("date test: " + dayjs().subtract(21, "day").date())
+    // if (dayjs('2022-12-31').date() == dayjs().subtract(21, "day").date()) {
+    //     console.log("it worked!! " + dayjs('2022-12-31').date() + " -- " + dayjs().subtract(21, "day").date())
+    // }
+    // console.log(dayjs.unix(data.list[i].dt).subtract(1, "day"))
     while (i<data.list.length) {
         today = dayjs.unix(data.list[0].dt).date();
-        variableDay = dayjs.unix(data.list[i].dt);
+        varDay = dayjs.unix(data.list[i].dt);
         
-        if (today !== variableDay) {
-            if (today == variableDay.subtract(1, "day").date()) {    
-                console.log(data.city.name + " - " + dayjs.unix(data.list[i].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + " temperature: " + ((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
-                dayOne = parseInt(dayOne) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
-                totalDayOnes = totalDayOnes + 1;
-                console.log("dayOne Here:  " + dayOne);
-                console.log("average here:  " + (dayOne/totalDayOnes))
+        if (today !== varDay) {
+            if (today == varDay.subtract(1, "day").date()) {    
+                dayOneTemp = parseInt(dayOneTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                dayOneCount = dayOneCount + 1;
+                // console.log(data.city.name + " - " + dayjs.unix(data.list[i].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + " temperature: " + ((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                // console.log("dayOne Here:  " + dayOneTemp);
+                // console.log("average here:  " + (dayOneTemp/dayOneCount))
             }
-            if (today == variableDay.subtract(2, "day").date()) {
-                dayTwo = parseInt(dayTwo) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
-                totalDayTwo = totalDayTwo + 1;
-                console.log(data.city.name + " - " + dayjs.unix(data.list[i].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + " temperature: " + ((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
-                console.log("dayOne Here:  " + dayTwo);
-                console.log("average here:  " + (dayTwo/totalDayTwo))
+            if (today == varDay.subtract(2, "day").date()) {
+                dayTwoTemp = parseInt(dayTwoTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                dayTwoCount = dayTwoCount + 1;
+                // console.log(data.city.name + " - " + dayjs.unix(data.list[i].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + " temperature: " + ((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                // console.log("dayOne Here:  " + dayTwoTemp);
+                // console.log("average here:  " + (dayTwoTemp/dayTwoCount))
             }
-            if (today == variableDay.subtract(3, "day").date()) {}
-            if (today == variableDay.subtract(4, "day").date()) {}
-            if (today == variableDay.subtract(5, "day").date()) {}
+            if (today == varDay.subtract(3, "day").date()) {
+                dayThreeTemp = parseInt(dayThreeTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                dayThreeCount = dayThreeCount + 1;
+            }
+            if (today == varDay.subtract(4, "day").date()) {
+                dayFourTemp = parseInt(dayFourTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                dayFourCount = dayFourCount + 1;
+            }
+            if (today == varDay.subtract(5, "day").date()) {
+                dayFiveTemp = parseInt(dayFiveTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
+                dayFiveCount = dayFiveCount + 1;
+            }
         }
         
         i++;
     };
-    varTemp1 = dayOne/totalDayOnes;
+    varTemp1 = (dayOneTemp/dayOneCount).toFixed(2);
     $('#varTemp1').text(varTemp1);
-    varTemp2 = dayTwo/totalDayTwo;
+    varTemp2 = (dayTwoTemp/dayTwoCount).toFixed(2);
     $('#varTemp2').text(varTemp2);
-    console.log("Day One Average: " + varTemp1)
-    console.log("Day Two Average: " + varTemp2)
+    varTemp3 = (dayThreeTemp/dayThreeCount).toFixed(2);
+    $('#varTemp3').text(varTemp3);
+    varTemp4 = (dayFourTemp/dayFourCount).toFixed(2);
+    $('#varTemp4').text(varTemp4);
+    varTemp5 = (dayFiveTemp/dayFiveCount).toFixed(2);
+    $('#varTemp5').text(varTemp5);
+    // console.log("Day One Average: " + varTemp1)
+    // console.log("Day Two Average: " + varTemp2)
 })
