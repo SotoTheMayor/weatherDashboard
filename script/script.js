@@ -5,6 +5,7 @@ var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
 var cityOptions = $('#cityOptions')
+var testArray = []
 
 
 // sBtn.click(citySearch);
@@ -16,36 +17,16 @@ var citySearch = function() {
 
     var urlString = document.location.search;
     var cityName = urlString.split('&')[0];
-    // cityQuery.textContent = cityName
-    // getCity(cityName)}
 
     if (cityName) {
         currentCity.textContent = cityName;
-    
         getCity(cityName);
       } else {
         document.location.replace('./index.html');
-// ________________
-    // if (cityQuery) {
-    //     cityQuery = cityQuery.textContent
 
-    //     getCity(cityName)
-    // } else {
-    //     cityValidation.textContent = 'Must input a city name';
     }
 }
-// function test() {
-// fetch('http://api.openweathermap.org/geo/1.0/direct?q=cincinnati&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
-// .then(function (response) {
-//     if (response.ok) {
-//         response.json().then(function (data) {
-//           displayCities(data);
-//           console.log(response.length);
-//         })
-//     }
-// })
-// }
-// test();
+
 
 var getCity = function(city) {
     var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + city + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
@@ -76,21 +57,24 @@ var displayCities = function(cities) {
       cityOptions.append('<option>' + cities[i].name + ' ' + cities[i].state + ' Country: ' + cities[i].country + '</option>');
       cityOptions.children().eq(i).attr({
         'id': 'choice' + i,
-        'value': 'choice' + i
+        'value': i
         })
+        testArray.push(cities[i])
       console.log(cities[i].lat)
       console.log(cities[i].lon)
     }
+    console.log(testArray)
 }
 
-var getWeather = function(cities) {
+
+function getWeather() {
     // if (cities.length>0) {
-        var o = cityOptions.options
-        var s = cityOptions.selectedIndex
-        console.log(o)
-    console.log(cities[o].lat)
-    resultLat = parseInt(cities[s].lat);
-    resultLon = parseInt(cities[s].lon); 
+        var o = cityOptions.find(":selected").val()
+        // var s = cityOptions.selectedIndex
+        console.log("hi")
+    // console.log(cities[o].lat)
+    resultLat = parseInt(testArray[o].lat);
+    resultLon = parseInt(testArray[o].lon); 
     // }
     var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
 
