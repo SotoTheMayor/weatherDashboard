@@ -29,6 +29,7 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
     let i;
     for (i=1;i<6;i++) {
         var futureStats = $('.day' + i)
+        $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>");
         futureStats.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
         futureStats.append('<li><strong>' + "Wind: </strong>" + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</li>');
         futureStats.append('<li><strong>' + "Humidity: </strong>" + data.list[0].main.humidity + " %" + '</li>');
