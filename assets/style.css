@@ -10,3 +10,7 @@
 header {
     background-color: var(--bs-info-text);
 }
+
+.smallFont {
+    font-size: small;
+}
