@@ -1,21 +1,103 @@
 var display = $('.stats')
 var currentCity = $('.currentCity') 
+var cityQuery = $('#search')
+var sBtn = $('#sBtn')
+var gBtn = $('#gBtn')
+var cityValidation = $('#cityValidation')
+var cityOptions = $('#cityOptions')
 
 
-fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
-    .then(function (response) {
+// sBtn.click(citySearch);
+// gBtn.click(getWeather);
+// sBtn.addEventListener("click", citySearch)
+// gBtn[0].addEventListener("click", getWeather)
+// debugger
+var citySearch = function() {
+
+    var urlString = document.location.search;
+    var cityName = urlString.split('&')[0];
+    // cityQuery.textContent = cityName
+    // getCity(cityName)}
+
+    if (cityName) {
+        currentCity.textContent = cityName;
+    
+        getCity(cityName);
+      } else {
+        document.location.replace('./index.html');
+// ________________
+    // if (cityQuery) {
+    //     cityQuery = cityQuery.textContent
+
+    //     getCity(cityName)
+    // } else {
+    //     cityValidation.textContent = 'Must input a city name';
+    }
+}
+// function test() {
+// fetch('http://api.openweathermap.org/geo/1.0/direct?q=cincinnati&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
+// .then(function (response) {
+//     if (response.ok) {
+//         response.json().then(function (data) {
+//           displayCities(data);
+//           console.log(response.length);
+//         })
+//     }
+// })
+// }
+// test();
+
+var getCity = function(city) {
+    var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + city + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
+    apiGeo = apiGeo.replace("search", "q");
+    
+    fetch(apiGeo).then(function (response) {
+        if (response.ok) {
+            response.json().then(function (data) {
+              displayCities(data);
+            })
+        }
+    })
+}
+
+var displayCities = function(cities) {
+    if (cities.length === 0) {
+      cityValidation.textContent = 'No cities found';
+      return;
+    } else if (cities.length === 1) {
+      cityValidation.textContent = 'One city found';
+      resultLat = cities.lat;
+      resultLon = cities.lon;  
+    //   getWeather();
+    }
+    cityValidation.textContent = 'Multiple cities found.  Select one:';
+    for (var i = 0; i < cities.length; i++) {
+    //   var cityOptions = $('#cityOptions');
+      cityOptions.append('<option>' + cities[i].name + ' ' + cities[i].state + ' Country: ' + cities[i].country + '</option>');
+      cityOptions.children().eq(i).attr({
+        'id': 'choice' + i,
+        'value': 'choice' + i
+        })
+      console.log(cities[i].lat)
+      console.log(cities[i].lon)
+    }
+}
+
+var getWeather = function(cities) {
+    // if (cities.length>0) {
+        var o = cityOptions.options
+        var s = cityOptions.selectedIndex
+        console.log(o)
+    console.log(cities[o].lat)
+    resultLat = parseInt(cities[s].lat);
+    resultLon = parseInt(cities[s].lon); 
+    // }
+    var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
+
+fetch(apiUrl).then(function (response) {
     return response.json();
-  })
-  .then(function (data) {
-
-    // console.log(data);
-  });
-
-  fetch('http://api.openweathermap.org/data/2.5/forecast?lat=45.3038538&lon=-93.5671825&appid=0ab16bd9ca1ea598f1fc384ead80bb3a')
-    .then(function (response) {
-    return response.json();
-  })
-    .then(function (data) {
+})
+.then(function (data) {
     // console.log(data);
     // console.log(dayjs.unix(1674356400));
     display.append('<li>' + data.city.name + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
@@ -25,8 +107,8 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
     display.children().addClass("list-group-item text-start");
     display.children().eq(0).addClass("fs-3 fw-bold");
     currentCity.text(data.city.name + " ");
+    
 
-    let i;
     for (i=1;i<6;i++) {
         var futureStats = $('.day' + i)
         $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>");
@@ -38,7 +120,7 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
         futureStats.children().eq(3).children('span').attr("id", "varHum" + i);
         futureStats.children().addClass("list-group-item text-start smallFont");
     }
-
+    
     let dayOneCount = 0;
     let dayTwoCount = 0;
     let dayThreeCount = 0;
@@ -60,7 +142,7 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
     let dayFiveHum = 0;
     let dayFiveWind = 0;
     i = 0;
-
+    
     while (i<data.list.length) {
         today = dayjs.unix(data.list[0].dt).date();
         varDay = dayjs.unix(data.list[i].dt);
@@ -106,34 +188,37 @@ fetch('http://api.openweathermap.org/geo/1.0/direct?q=Elk%20River&limit=5&appid=
     $('#varWind1').text(varWind1);
     varHum1 = (dayOneHum/dayOneCount).toFixed(2);
     $('#varHum1').text(varHum1);
-
+    
     varTemp2 = (dayTwoTemp/dayTwoCount).toFixed(2);
     $('#varTemp2').text(varTemp2);
     varWind2 = (dayTwoWind/dayTwoCount).toFixed(2);
     $('#varWind2').text(varWind2);
     varHum2 = (dayTwoHum/dayTwoCount).toFixed(2);
     $('#varHum2').text(varHum2);
-
+    
     varTemp3 = (dayThreeTemp/dayThreeCount).toFixed(2);
     $('#varTemp3').text(varTemp3);
     varWind3 = (dayThreeWind/dayThreeCount).toFixed(2);
     $('#varWind3').text(varWind3);
     varHum3= (dayThreeHum/dayThreeCount).toFixed(2);
     $('#varHum3').text(varHum3);
-
+    
     varTemp4 = (dayFourTemp/dayFourCount).toFixed(2);
     $('#varTemp4').text(varTemp4);
     varWind4 = (dayFourWind/dayFourCount).toFixed(2);
     $('#varWind4').text(varWind4);
     varHum4 = (dayFourHum/dayFourCount).toFixed(2);
     $('#varHum4').text(varHum4);
-
+    
     varTemp5 = (dayFiveTemp/dayFiveCount).toFixed(2);
     $('#varTemp5').text(varTemp5);
     varWind5 = (dayFiveWind/dayFiveCount).toFixed(2);
     $('#varWind5').text(varWind5);
     varHum5 = (dayFiveHum/dayFiveCount).toFixed(2);
     $('#varHum5').text(varHum5);
-
-
+    
+    
 })
+}
+
+citySearch()

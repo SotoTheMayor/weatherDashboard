@@ -23,10 +23,17 @@
             <!-- search and history -->
         <aside class="lh-block col-3">
             <!-- search form and button -->
-            <div class="search">
-                <h2>Search for a city:</h2>
-                <form class="form"></form>
-                <button>Search</button>
+            <div>
+                <form id="sForm">
+                    <label for="search">Search for a city:</label>
+                    <input type="text" id="search" name="search">
+                </form>
+                <button id="sBtn" type="submit" form="sForm" value="submit">Search</button>
+                <div id="cityValidation"></div>
+                <label>Multiple cities found:</label>
+                <select id="cityOptions"></select>
+                <!-- <option></option> -->
+                <button id="gBtn">Get Weather</button>
             </div>
             <!-- history with buttons -->
             <div class="history">History</div>
