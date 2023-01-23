@@ -1,3 +1,4 @@
+$(document).ready(function () {
 var display = $('.stats')
 var currentCity = $('.currentCity') 
 var cityQuery = $('#search')
@@ -196,4 +197,5 @@ function getWeather() {
     })
 }
 
-citySearch()
+sBtn.click(citySearch())
+})
