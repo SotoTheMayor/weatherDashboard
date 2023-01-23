@@ -1,14 +1,9 @@
 * {
-    /* border-style: solid; */
     padding: 5px;
 }
 
 .form {
     border-style: solid;
-}
-
-header {
-    background-color: var(--bs-info-text);
 }
 
 .smallFont {
