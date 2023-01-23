@@ -6,13 +6,89 @@ var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
 var cityOptions = $('#cityOptions')
-var sHistory = $("#sHistory")
+var listHistory = $("#sHistory")
 var cityArray = []
 
+if (!localStorage.getItem("sHistory")) {
+    var sHistory = {
+        h1: [],
+        Display1: "",
+        h2: [],
+        Display2: "",
+        h3: [],
+        Display3: "",
+        h4: [],
+        Display4: "",
+        h5: [],
+        Display5: "",
+    }
+    localStorage.setItem("sHistory", JSON.stringify(sHistory));
+} else {
+    var sHistory = JSON.parse(localStorage.getItem("sHistory"));
+};
+listHistory.append(sHistory.Display1)
+listHistory.append(sHistory.Display2)
+listHistory.append(sHistory.Display3)
+listHistory.append(sHistory.Display4)
+listHistory.append(sHistory.Display5)
+listHistory.children().addClass("list-group-item text-start")
+listHistory.children().eq(0).children().attr("id", "hBtn1");
+listHistory.children().eq(1).children().attr("id", "hBtn2");
+listHistory.children().eq(2).children().attr("id", "hBtn3");
+listHistory.children().eq(3).children().attr("id", "hBtn4");
+listHistory.children().eq(4).children().attr("id", "hBtn5");
 
+$('#hBtn1').click(function(){
+    resultLat = parseInt(sHistory.h1.lat);
+    resultLon = parseInt(sHistory.h1.lon);
+    resultCity = sHistory.h1.name;
+    resultState = sHistory.h1.state;
+    resultCountry = sHistory.h1.country;
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
 
-var citySearch = function() {
+$('#hBtn2').click(function(){
+    resultLat = parseInt(sHistory.h2.lat);
+    resultLon = parseInt(sHistory.h2.lon);
+    resultCity = sHistory.h2.name;
+    resultState = sHistory.h2.state;
+    resultCountry = sHistory.h2.country;
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
 
+$('#hBtn3').click(function(){
+    resultLat = parseInt(sHistory.h3.lat);
+    resultLon = parseInt(sHistory.h3.lon);
+    resultCity = sHistory.h3.name;
+    resultState = sHistory.h3.state;
+    resultCountry = sHistory.h3.country;
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
+
+$('#hBtn4').click(function(){
+    resultLat = parseInt(sHistory.h4.lat);
+    resultLon = parseInt(sHistory.h4.lon);
+    resultCity = sHistory.h4.name;
+    resultState = sHistory.h4.state;
+    resultCountry = sHistory.h4.country;
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
+
+$('#hBtn5').click(function(){
+    resultLat = parseInt(sHistory.h5.lat);
+    resultLon = parseInt(sHistory.h5.lon);
+    resultCity = sHistory.h5.name;
+    resultState = sHistory.h5.state;
+    resultCountry = sHistory.h5.country;
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
+
+function citySearch() {
     var urlString = document.location.search;
     var cityName = urlString.split('&')[0];
 
@@ -24,10 +100,10 @@ var citySearch = function() {
 }
 
 
-var getCity = function(city) {
-    var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + city + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
+function getCity(cityName) {
+    var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + cityName + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
     apiGeo = apiGeo.replace("search", "q");
-    
+
     fetch(apiGeo).then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
@@ -37,14 +113,12 @@ var getCity = function(city) {
     })
 }
 
-var displayCities = function(cities) {
-    console.log(cities.length)
+function displayCities(cities) {
+
     if (cities.length === 0) {
-        console.log("there are none")
       cityValidation.text('No cities found');
       return;
     } else if (cities.length === 1) {
-        console.log("there's only one")
       cityValidation.text('One city found');
     } else {
     cityValidation.text('Multiple cities found.  Select one:');
@@ -54,17 +128,18 @@ var displayCities = function(cities) {
         cityOptions.children().eq(i).attr('value', i)
         cityArray.push(cities[i])
     }
+
 }
 
-
-function getWeather() {
+function getWeather(passArray) {
         $(".removeThis").remove();
-        var o = cityOptions.find(":selected").val()
-        resultLat = parseInt(cityArray[o].lat);
-        resultLon = parseInt(cityArray[o].lon);
-        resultCity = cityArray[o].name;
-        resultState = cityArray[o].state;
-        resultCountry = cityArray[o].country;
+        
+        resultLat = passArray[0];
+        resultLon = passArray[1];
+        resultCity = passArray[2];
+        resultState = passArray[3];
+        resultCountry = passArray[4];
+
         var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
 
         fetch(apiUrl).then(function (response) {
@@ -78,10 +153,6 @@ function getWeather() {
         display.children().addClass("list-group-item text-start removeThis");
         display.children().eq(0).addClass("fs-3 fw-bold");
         currentCity.text(resultCity + " ");
-        sHistory.prepend('<li>' + "City: " + resultCity + " State: " + resultState + " Country: " + resultCountry + '</li>')
-        sHistory.children().addClass("list-group-item text-start")
-        sHistory.children().eq(8).remove();
-        // localStorage.setItem()
 
         for (i=1;i<6;i++) {
             var futureStats = $('.day' + i)
@@ -95,6 +166,7 @@ function getWeather() {
             futureStats.children().addClass("list-group-item text-start smallFont removeThis");
             futureStats.children().children().addClass("removeThis")
             futureStats.children().eq(0).removeClass("removeThis");
+
         }
     
         let dayOneCount = 0;
@@ -198,4 +270,30 @@ function getWeather() {
 }
 
 sBtn.click(citySearch())
+gBtn.click(function(){
+    var o = cityOptions.find(":selected").val()
+
+        resultLat = parseInt(cityArray[o].lat);
+        resultLon = parseInt(cityArray[o].lon);
+        resultCity = cityArray[o].name;
+        resultState = cityArray[o].state;
+        resultCountry = cityArray[o].country;
+
+        sHistory.h5 = sHistory.h4
+        sHistory.Display5 = sHistory.Display4
+        sHistory.h4 = sHistory.h3
+        sHistory.Display4 = sHistory.Display3
+        sHistory.h3 = sHistory.h2
+        sHistory.Display3 = sHistory.Display2
+        sHistory.h2 = sHistory.h1
+        sHistory.Display2 = sHistory.Display1
+        sHistory.h1 = cityArray[o]
+        sHistory.Display1 = '<li><button>' + sHistory.h1.name + ", " + sHistory.h1.state + " - " + sHistory.h1.country + '</button></li>'
+
+        localStorage.setItem("sHistory", JSON.stringify(sHistory));
+
+    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+    getWeather(passArray)
+})
+
 })
