@@ -15,8 +15,8 @@
     href="./assets/style.css" 
     />
 </head>
-<body>
-    <header>
+<body class="bg-primary-subtle">
+    <header class="bg-dark-subtle mx-5">
         <h1 class="text-center">Weather Dashboard</h1></header>
         <main class="container row text-center">
             
@@ -28,13 +28,13 @@
                     <label for="search">Search for a city:</label>
                     <input type="text" id="search" name="search">
                 </form>
-                <button id="sBtn" type="submit" form="sForm" value="submit">Search</button>
+                <button id="sBtn" type="submit" form="sForm" value="submit" class="rounded bg-dark-subtle">Search</button>
                 
                 <div id="cityValidation"></div>
-                <select id="cityOptions" class="form-range"></select>
+                <select id="cityOptions" class="form-range form-control-sm text-center bg-white mb-2"></select>
                 <!-- <option></option> -->
             
-            <button id="gBtn" type="button">Get Weather</button>
+            <button id="gBtn" type="button" class="rounded bg-dark-subtle">Get Weather</button>
             </div>
             <!-- history with buttons -->
             <div>History</div>
@@ -58,19 +58,19 @@
                 <div class="row">
                     <h3><span class="currentCity"> </span>5 day Forecast <span class="fst-italic">(daily average)</span></h3>
                     <div class="row">
-                        <div class="col card day1 me-2 ps-1">
+                        <div class="col card day1 me-2 ps-1 bg-dark-subtle">
                             <ul class="futureStats list-group-item"></ul>
                         </div>
-                        <div class="col card day2 me-2 ps-1">
+                        <div class="col card day2 me-2 ps-1 bg-dark-subtle">
                             <ul class="futureStats list-group-item"></ul>
                         </div>
-                        <div class="col card day3 me-2 ps-1">
+                        <div class="col card day3 me-2 ps-1 bg-dark-subtle">
                             <ul class="futureStats list-group-item"></ul>
                         </div>
-                        <div class="col card day4 me-2 ps-1">
+                        <div class="col card day4 me-2 ps-1 bg-dark-subtle">
                             <ul class="futureStats list-group-item"></ul>
                         </div>
-                        <div class="col card day5 me-2 ps-1">
+                        <div class="col card day5 me-2 ps-1 bg-dark-subtle">
                             <ul class="futureStats list-group-item"></ul>
                         </div>
                     </div>

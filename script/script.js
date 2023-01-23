@@ -32,6 +32,7 @@ listHistory.append(sHistory.Display3)
 listHistory.append(sHistory.Display4)
 listHistory.append(sHistory.Display5)
 listHistory.children().addClass("list-group-item text-start")
+listHistory.children().children().addClass("rounded bg-dark-subtle my-2")
 listHistory.children().eq(0).children().attr("id", "hBtn1");
 listHistory.children().eq(1).children().attr("id", "hBtn2");
 listHistory.children().eq(2).children().attr("id", "hBtn3");
