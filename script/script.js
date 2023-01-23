@@ -139,14 +139,22 @@ function getWeather(passArray) {
         resultCity = passArray[2];
         resultState = passArray[3];
         resultCountry = passArray[4];
-
+        
         var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
-
+        
         fetch(apiUrl).then(function (response) {
-        return response.json();
+            return response.json();
         })
         .then(function (data) {
-        display.append('<li>' + resultCity + " " + resultState + " " + resultCountry + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
+        resultIcon = data.list[0].weather[0].icon
+        console.log(data.list[0])
+        display.append('<li>' + resultCity + " " + resultState + " " + resultCountry + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li><span></span>');
+        
+        display.children('span').append('<img src="http://openweathermap.org/img/wn/' + resultIcon + '@2x.png" />');
+        display.children().children('img').attr("id", "todayIcon")
+        $('#todayIcon').width(60);
+        $('#todayIcon').height(60);
+
         display.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
         display.append('<li><strong>' + "Wind: </strong>" + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</li>');
         display.append('<li><strong>' + "Humidity: </strong>" + data.list[0].main.humidity + " %" + '</li>');
@@ -156,7 +164,7 @@ function getWeather(passArray) {
 
         for (i=1;i<6;i++) {
             var futureStats = $('.day' + i)
-            $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>");
+            $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>" + "<span></span>");
             futureStats.append('<li><strong>' + "Temp:</strong>" + "<span></span>" + "° F" + '</li>');
             futureStats.children().eq(1).children('span').attr("id", "varTemp" + i);
             futureStats.append('<li><strong>' + "Wind:</strong>" + "<span></span>" + "MPH" +  '</li>');
@@ -166,6 +174,9 @@ function getWeather(passArray) {
             futureStats.children().addClass("list-group-item text-start smallFont removeThis");
             futureStats.children().children().addClass("removeThis")
             futureStats.children().eq(0).removeClass("removeThis");
+            futureStats.children().eq(0).children('span').addClass('icon');
+            futureStats.children().eq(0).children('span').attr("id", "varIcon" + i);
+
 
         }
     
@@ -177,18 +188,23 @@ function getWeather(passArray) {
         let dayOneTemp = 0;
         let dayOneHum = 0;
         let dayOneWind = 0;
+        let dayOneIcon = [];
         let dayTwoTemp = 0;
         let dayTwoHum = 0;
         let dayTwoWind = 0;
+        let dayTwoIcon = [];
         let dayThreeTemp = 0;
         let dayThreeHum = 0;
         let dayThreeWind = 0;
+        let dayThreeIcon = [];
         let dayFourTemp = 0;
         let dayFourHum = 0;
         let dayFourWind = 0;
+        let dayFourIcon = [];
         let dayFiveTemp = 0;
         let dayFiveHum = 0;
         let dayFiveWind = 0;
+        let dayFiveIcon = [];
         i = 0;
         
         while (i<data.list.length) {
@@ -200,30 +216,35 @@ function getWeather(passArray) {
                     dayOneTemp = parseInt(dayOneTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
                     dayOneWind = parseInt(dayOneWind) + parseInt((data.list[i].wind.speed * 2.23694).toFixed(2));
                     dayOneHum = parseInt(dayOneHum) + parseInt(data.list[i].main.humidity);
+                    dayOneIcon.push(data.list[i].weather[0].icon)
                     dayOneCount = dayOneCount + 1;
                 }
                 if (today == varDay.subtract(2, "day").date()) {
                     dayTwoTemp = parseInt(dayTwoTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
                     dayTwoWind = parseInt(dayTwoWind) + parseInt((data.list[i].wind.speed * 2.23694).toFixed(2));
                     dayTwoHum = parseInt(dayTwoHum) + parseInt(data.list[i].main.humidity);
+                    dayTwoIcon.push(data.list[i].weather[0].icon)
                     dayTwoCount = dayTwoCount + 1;
                 }
                 if (today == varDay.subtract(3, "day").date()) {
                     dayThreeTemp = parseInt(dayThreeTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
                     dayThreeWind = parseInt(dayThreeWind) + parseInt((data.list[i].wind.speed * 2.23694).toFixed(2));
                     dayThreeHum = parseInt(dayThreeHum) + parseInt(data.list[i].main.humidity);
+                    dayThreeIcon.push(data.list[i].weather[0].icon)
                     dayThreeCount = dayThreeCount + 1;
                 }
                 if (today == varDay.subtract(4, "day").date()) {
                     dayFourTemp = parseInt(dayFourTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
                     dayFourWind = parseInt(dayFourWind) + parseInt((data.list[i].wind.speed * 2.23694).toFixed(2));
                     dayFourHum = parseInt(dayFourHum) + parseInt(data.list[i].main.humidity);
+                    dayFourIcon.push(data.list[i].weather[0].icon)
                     dayFourCount = dayFourCount + 1;
                 }
                 if (today == varDay.subtract(5, "day").date()) {
                     dayFiveTemp = parseInt(dayFiveTemp) + parseInt(((data.list[i].main.temp - 273.15) * 9/5 + 32).toFixed(2));
                     dayFiveWind = parseInt(dayFiveWind) + parseInt((data.list[i].wind.speed * 2.23694).toFixed(2));
                     dayFiveHum = parseInt(dayFiveHum) + parseInt(data.list[i].main.humidity);
+                    dayFiveIcon.push(data.list[i].weather[0].icon)
                     dayFiveCount = dayFiveCount + 1;
                 }
             }
@@ -236,35 +257,54 @@ function getWeather(passArray) {
         $('#varWind1').text(varWind1);
         varHum1 = (dayOneHum/dayOneCount).toFixed(2);
         $('#varHum1').text(varHum1);
-        
+        getIcon = dayOneIcon[parseInt(dayOneIcon.length/2)]
+        $('#varIcon1').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon1').children().width(50);
+        $('#varIcon1').children().height(50);
+
         varTemp2 = (dayTwoTemp/dayTwoCount).toFixed(2);
         $('#varTemp2').text(varTemp2);
         varWind2 = (dayTwoWind/dayTwoCount).toFixed(2);
         $('#varWind2').text(varWind2);
         varHum2 = (dayTwoHum/dayTwoCount).toFixed(2);
         $('#varHum2').text(varHum2);
-        
+        getIcon = dayTwoIcon[parseInt(dayTwoIcon.length/2)]
+        $('#varIcon2').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon2').children().width(50);
+        $('#varIcon2').children().height(50);
+
         varTemp3 = (dayThreeTemp/dayThreeCount).toFixed(2);
         $('#varTemp3').text(varTemp3);
         varWind3 = (dayThreeWind/dayThreeCount).toFixed(2);
         $('#varWind3').text(varWind3);
         varHum3= (dayThreeHum/dayThreeCount).toFixed(2);
         $('#varHum3').text(varHum3);
-        
+        getIcon = dayThreeIcon[parseInt(dayThreeIcon.length/2)]
+        $('#varIcon3').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon3').children().width(50);
+        $('#varIcon3').children().height(50);
+
         varTemp4 = (dayFourTemp/dayFourCount).toFixed(2);
         $('#varTemp4').text(varTemp4);
         varWind4 = (dayFourWind/dayFourCount).toFixed(2);
         $('#varWind4').text(varWind4);
         varHum4 = (dayFourHum/dayFourCount).toFixed(2);
         $('#varHum4').text(varHum4);
-        
+        getIcon = dayFourIcon[parseInt(dayFourIcon.length/2)]
+        $('#varIcon4').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon4').children().width(50);
+        $('#varIcon4').children().height(50);
+
         varTemp5 = (dayFiveTemp/dayFiveCount).toFixed(2);
         $('#varTemp5').text(varTemp5);
         varWind5 = (dayFiveWind/dayFiveCount).toFixed(2);
         $('#varWind5').text(varWind5);
         varHum5 = (dayFiveHum/dayFiveCount).toFixed(2);
         $('#varHum5').text(varHum5);
-        
+        getIcon = dayFiveIcon[parseInt(dayFiveIcon.length/2)]
+        $('#varIcon5').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon5').children().width(50);
+        $('#varIcon5').children().height(50);
         
     })
 }
