@@ -5,21 +5,17 @@ var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
 var cityOptions = $('#cityOptions')
-var testArray = []
+var cityArray = []
 
 
-// sBtn.click(citySearch);
-// gBtn.click(getWeather);
-// sBtn.addEventListener("click", citySearch)
-// gBtn[0].addEventListener("click", getWeather)
-// debugger
+
 var citySearch = function() {
 
     var urlString = document.location.search;
     var cityName = urlString.split('&')[0];
 
     if (cityName) {
-        currentCity.textContent = cityName;
+        // currentCity.textContent = cityName;
         getCity(cityName);
       } else {
         document.location.replace('./index.html');
@@ -59,11 +55,11 @@ var displayCities = function(cities) {
         'id': 'choice' + i,
         'value': i
         })
-        testArray.push(cities[i])
+        cityArray.push(cities[i])
       console.log(cities[i].lat)
       console.log(cities[i].lon)
     }
-    console.log(testArray)
+    console.log(cityArray)
 }
 
 
@@ -73,8 +69,12 @@ function getWeather() {
         // var s = cityOptions.selectedIndex
         console.log("hi")
     // console.log(cities[o].lat)
-    resultLat = parseInt(testArray[o].lat);
-    resultLon = parseInt(testArray[o].lon); 
+    resultLat = parseInt(cityArray[o].lat);
+    resultLon = parseInt(cityArray[o].lon);
+    resultCity = cityArray[o].name;
+    resultState = cityArray[o].state;
+    resultCountry = cityArray[o].country;
+    console.log("City: " + resultCity + " State: " + resultState + " Country: " + resultCountry)
     // }
     var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
 
@@ -84,13 +84,13 @@ fetch(apiUrl).then(function (response) {
 .then(function (data) {
     // console.log(data);
     // console.log(dayjs.unix(1674356400));
-    display.append('<li>' + data.city.name + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
+    display.append('<li>' + resultCity + " " + resultState + " " + resultCountry + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li>');
     display.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
     display.append('<li><strong>' + "Wind: </strong>" + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</li>');
     display.append('<li><strong>' + "Humidity: </strong>" + data.list[0].main.humidity + " %" + '</li>');
     display.children().addClass("list-group-item text-start");
     display.children().eq(0).addClass("fs-3 fw-bold");
-    currentCity.text(data.city.name + " ");
+    currentCity.text(resultCity + " ");
     
 
     for (i=1;i<6;i++) {
