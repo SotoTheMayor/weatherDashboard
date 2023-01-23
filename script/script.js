@@ -5,6 +5,7 @@ var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
 var cityOptions = $('#cityOptions')
+var sHistory = $("#sHistory")
 var cityArray = []
 
 
@@ -92,6 +93,10 @@ fetch(apiUrl).then(function (response) {
     display.children().addClass("list-group-item text-start removeThis");
     display.children().eq(0).addClass("fs-3 fw-bold");
     currentCity.text(resultCity + " ");
+    sHistory.prepend('<li>' + "City: " + resultCity + " State: " + resultState + " Country: " + resultCountry + '</li>')
+    sHistory.children().addClass("list-group-item text-start")
+    sHistory.children().eq(8).remove();
+
     
 
     for (i=1;i<6;i++) {
