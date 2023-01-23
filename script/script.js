@@ -65,6 +65,7 @@ var displayCities = function(cities) {
 
 function getWeather() {
     // if (cities.length>0) {
+        $(".removeThis").remove();
         var o = cityOptions.find(":selected").val()
         // var s = cityOptions.selectedIndex
         console.log("hi")
@@ -88,7 +89,7 @@ fetch(apiUrl).then(function (response) {
     display.append('<li><strong>' + "Temp: </strong>" + ((data.list[0].main.temp - 273.15) * 9/5 + 32).toFixed(2) + "° F" + '</li>');
     display.append('<li><strong>' + "Wind: </strong>" + (data.list[0].wind.speed * 2.23694).toFixed(2) + "  MPH" +  '</li>');
     display.append('<li><strong>' + "Humidity: </strong>" + data.list[0].main.humidity + " %" + '</li>');
-    display.children().addClass("list-group-item text-start");
+    display.children().addClass("list-group-item text-start removeThis");
     display.children().eq(0).addClass("fs-3 fw-bold");
     currentCity.text(resultCity + " ");
     
@@ -102,7 +103,9 @@ fetch(apiUrl).then(function (response) {
         futureStats.children().eq(2).children('span').attr("id", "varWind" + i);
         futureStats.append('<li><strong>' + "Humidity:</strong>" + "<span></span>" + "%" + '</li>');
         futureStats.children().eq(3).children('span').attr("id", "varHum" + i);
-        futureStats.children().addClass("list-group-item text-start smallFont");
+        futureStats.children().addClass("list-group-item text-start smallFont removeThis");
+        futureStats.children().children().addClass("removeThis")
+        futureStats.children().eq(0).removeClass("removeThis");
     }
     
     let dayOneCount = 0;
