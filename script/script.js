@@ -97,7 +97,7 @@ function citySearch(event) {
     if (cityName) {
         getCity(cityName);
     } else {
-        cityName = $('#search').val()
+        cityName = "?q=" + $('#search').val()
         console.log(cityName)
         getCity(cityName)
     }
@@ -106,7 +106,7 @@ function citySearch(event) {
 
 function getCity(cityName) {
     var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + cityName + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
-    apiGeo = apiGeo.replace("search", "q");
+    // apiGeo = apiGeo.replace("search", "q");
 
     fetch(apiGeo).then(function (response) {
         if (response.ok) {
@@ -127,12 +127,16 @@ function displayCities(cities) {
     } else {
     cityValidation.text('Multiple cities found.  Select one:');
     }
+    $(".sOptions").remove();
     for (var i = 0; i < cities.length; i++) {
         cityOptions.append('<option>' + cities[i].name + ' ' + cities[i].state + ' Country: ' + cities[i].country + '</option>');
         cityOptions.children().eq(i).attr('value', i)
-        cityArray.push(cities[i])
+        cityOptions.children().eq(i).addClass('sOptions')
+        cityArray[i] = cities[i]
+
     }
 
+    return cityArray;
 }
 
 function getWeather(passArray) {
@@ -313,9 +317,8 @@ function getWeather(passArray) {
     })
 }
 
-function goodone() {
+function displayWeather() {
     var o = cityOptions.find(":selected").val()
-        console.log(parseInt(cityArray[o].lat))
         resultLat = parseInt(cityArray[o].lat);
         resultLon = parseInt(cityArray[o].lon);
         resultCity = cityArray[o].name;
@@ -341,6 +344,6 @@ function goodone() {
 
 
 sBtn.click(citySearch);
-gBtn.click(goodone);
+gBtn.click(displayWeather);
 
 })
