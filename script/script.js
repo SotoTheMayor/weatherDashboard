@@ -89,14 +89,17 @@ $('#hBtn5').click(function(){
     getWeather(passArray)
 })
 
-function citySearch() {
+function citySearch(event) {
+    event.preventDefault();
     var urlString = document.location.search;
     var cityName = urlString.split('&')[0];
 
     if (cityName) {
         getCity(cityName);
     } else {
-        document.location.replace('./index.html');
+        cityName = $('#search').val()
+        console.log(cityName)
+        getCity(cityName)
     }
 }
 
@@ -140,7 +143,7 @@ function getWeather(passArray) {
         resultCity = passArray[2];
         resultState = passArray[3];
         resultCountry = passArray[4];
-        
+
         var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
         
         fetch(apiUrl).then(function (response) {
@@ -310,10 +313,9 @@ function getWeather(passArray) {
     })
 }
 
-sBtn.click(citySearch())
-gBtn.click(function(){
+function goodone() {
     var o = cityOptions.find(":selected").val()
-
+        console.log(parseInt(cityArray[o].lat))
         resultLat = parseInt(cityArray[o].lat);
         resultLon = parseInt(cityArray[o].lon);
         resultCity = cityArray[o].name;
@@ -335,6 +337,10 @@ gBtn.click(function(){
 
     var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
     getWeather(passArray)
-})
+}
+
+
+sBtn.click(citySearch);
+gBtn.click(goodone);
 
 })
