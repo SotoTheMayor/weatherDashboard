@@ -1,7 +1,6 @@
 $(document).ready(function () {
 var display = $('.stats')
 var currentCity = $('.currentCity') 
-var cityQuery = $('#search')
 var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
@@ -9,6 +8,7 @@ var cityOptions = $('#cityOptions')
 var listHistory = $("#sHistory")
 var cityArray = []
 
+//creates local storage if it doesn't already exist, so when it is called later there isn't an error even if it is empty
 if (!localStorage.getItem("sHistory")) {
     var sHistory = {
         h1: [],
@@ -26,6 +26,9 @@ if (!localStorage.getItem("sHistory")) {
 } else {
     var sHistory = JSON.parse(localStorage.getItem("sHistory"));
 };
+
+
+
 listHistory.append(sHistory.Display1)
 listHistory.append(sHistory.Display2)
 listHistory.append(sHistory.Display3)
@@ -38,6 +41,15 @@ listHistory.children().eq(1).children().attr("id", "hBtn2");
 listHistory.children().eq(2).children().attr("id", "hBtn3");
 listHistory.children().eq(3).children().attr("id", "hBtn4");
 listHistory.children().eq(4).children().attr("id", "hBtn5");
+
+
+function setHistory() {
+    listHistory.prepend(sHistory.Display1)
+    listHistory.children().eq(5).children().remove()
+    listHistory.children().addClass("list-group-item text-start")
+    listHistory.children().children().addClass("rounded bg-dark-subtle my-2")
+}
+
 
 $('#hBtn1').click(function(){
     resultLat = parseInt(sHistory.h1.lat);
@@ -155,7 +167,6 @@ function getWeather(passArray) {
         })
         .then(function (data) {
         resultIcon = data.list[0].weather[0].icon
-        console.log(data.list[0])
         display.append('<li>' + resultCity + " " + resultState + " " + resultCountry + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li><span></span>');
         
         display.children('span').append('<img src="http://openweathermap.org/img/wn/' + resultIcon + '@2x.png" />');
@@ -335,6 +346,7 @@ function displayWeather() {
         sHistory.Display2 = sHistory.Display1
         sHistory.h1 = cityArray[o]
         sHistory.Display1 = '<li><button>' + sHistory.h1.name + ", " + sHistory.h1.state + " - " + sHistory.h1.country + '</button></li>'
+        setHistory();
 
         localStorage.setItem("sHistory", JSON.stringify(sHistory));
 
