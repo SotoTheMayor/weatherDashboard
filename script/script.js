@@ -28,7 +28,7 @@ if (!localStorage.getItem("sHistory")) {
 };
 
 
-
+//if history exists in local storage, appends buttons on page refresh
 listHistory.append(sHistory.Display1)
 listHistory.append(sHistory.Display2)
 listHistory.append(sHistory.Display3)
@@ -42,7 +42,7 @@ listHistory.children().eq(2).children().attr("id", "hBtn3");
 listHistory.children().eq(3).children().attr("id", "hBtn4");
 listHistory.children().eq(4).children().attr("id", "hBtn5");
 
-
+//adjusts button history on each new search
 function setHistory() {
     listHistory.prepend(sHistory.Display1)
     listHistory.children().eq(5).children().remove()
@@ -50,7 +50,7 @@ function setHistory() {
     listHistory.children().children().addClass("rounded bg-dark-subtle my-2")
 }
 
-
+//pulls locations out of history when associated buttons are clicked, and pass to weather fetch
 $('#hBtn1').click(function(){
     resultLat = parseInt(sHistory.h1.lat);
     resultLon = parseInt(sHistory.h1.lon);
@@ -101,6 +101,7 @@ $('#hBtn5').click(function(){
     getWeather(passArray)
 })
 
+//takes a city from the url previously searched, or passes a new search to the lat/lon finder api
 function citySearch(event) {
     event.preventDefault();
     var urlString = document.location.search;
@@ -115,7 +116,7 @@ function citySearch(event) {
     }
 }
 
-
+//fetches cities by name in an api call, then passes to option pick UI
 function getCity(cityName) {
     var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + cityName + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
     // apiGeo = apiGeo.replace("search", "q");
@@ -129,6 +130,8 @@ function getCity(cityName) {
     })
 }
 
+//provides some feedback on city count returned, max available from api is 5
+//sets available cities based on name search to an option picker
 function displayCities(cities) {
 
     if (cities.length === 0) {
@@ -145,15 +148,16 @@ function displayCities(cities) {
         cityOptions.children().eq(i).attr('value', i)
         cityOptions.children().eq(i).addClass('sOptions')
         cityArray[i] = cities[i]
-
     }
-
     return cityArray;
 }
 
+//associated with Get Weather button & history buttons
+//clears all information about most recent city search
+//takes the array pass from either button, and uses it's values to populate the page
 function getWeather(passArray) {
         $(".removeThis").remove();
-        
+
         resultLat = passArray[0];
         resultLon = passArray[1];
         resultCity = passArray[2];
@@ -181,6 +185,7 @@ function getWeather(passArray) {
         display.children().eq(0).addClass("fs-3 fw-bold");
         currentCity.text(resultCity + " ");
 
+//iterates all five day forecast stats based on a dayjs call and a for loop with values calculated below
         for (i=1;i<6;i++) {
             var futureStats = $('.day' + i)
             $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>" + "<span></span>");
@@ -195,10 +200,9 @@ function getWeather(passArray) {
             futureStats.children().eq(0).removeClass("removeThis");
             futureStats.children().eq(0).children('span').addClass('icon');
             futureStats.children().eq(0).children('span').attr("id", "varIcon" + i);
-
-
         }
-    
+
+//variable sets for calculations of five day forecast
         let dayOneCount = 0;
         let dayTwoCount = 0;
         let dayThreeCount = 0;
@@ -225,7 +229,9 @@ function getWeather(passArray) {
         let dayFiveWind = 0;
         let dayFiveIcon = [];
         i = 0;
-        
+
+//loop to add values based on the difference between today and the date in the call
+//uses dayjs and data from the weather api call to group together days
         while (i<data.list.length) {
             today = dayjs.unix(data.list[0].dt).date();
             varDay = dayjs.unix(data.list[i].dt);
@@ -267,9 +273,11 @@ function getWeather(passArray) {
                     dayFiveCount = dayFiveCount + 1;
                 }
             }
-            
             i++;
         };
+
+//averages temp, wind, and humidity for each day based on while loop above
+//icons couldn't be averaged, so the median icon is taken to represent the forecast day
         varTemp1 = (dayOneTemp/dayOneCount).toFixed(2);
         $('#varTemp1').text(varTemp1);
         varWind1 = (dayOneWind/dayOneCount).toFixed(2);
@@ -328,6 +336,8 @@ function getWeather(passArray) {
     })
 }
 
+//when Get Weather button is clicked, adjusts history and creates variables for array
+//passes that array to above function getWeather
 function displayWeather() {
     var o = cityOptions.find(":selected").val()
         resultLat = parseInt(cityArray[o].lat);
@@ -354,7 +364,7 @@ function displayWeather() {
     getWeather(passArray)
 }
 
-
+//button listeners
 sBtn.click(citySearch);
 gBtn.click(displayWeather);
 
