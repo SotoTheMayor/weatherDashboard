@@ -39,64 +39,73 @@ listHistory.children().eq(2).children().attr("id", "hBtn3");
 listHistory.children().eq(3).children().attr("id", "hBtn4");
 listHistory.children().eq(4).children().attr("id", "hBtn5");
 
-$('#hBtn1').click(function(){
-    resultLat = parseInt(sHistory.h1.lat);
-    resultLon = parseInt(sHistory.h1.lon);
-    resultCity = sHistory.h1.name;
-    resultState = sHistory.h1.state;
-    resultCountry = sHistory.h1.country;
-    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
-    getWeather(passArray)
-})
+buttonCall()
 
-$('#hBtn2').click(function(){
-    resultLat = parseInt(sHistory.h2.lat);
-    resultLon = parseInt(sHistory.h2.lon);
-    resultCity = sHistory.h2.name;
-    resultState = sHistory.h2.state;
-    resultCountry = sHistory.h2.country;
-    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
-    getWeather(passArray)
-})
+function buttonCall() {
+    $('#hBtn1').click(function(){
+        resultLat = parseInt(sHistory.h1.lat);
+        resultLon = parseInt(sHistory.h1.lon);
+        resultCity = sHistory.h1.name;
+        resultState = sHistory.h1.state;
+        resultCountry = sHistory.h1.country;
+        var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+        listHistory.append(sHistory.Display1)
+        getWeather(passArray)
+    })
 
-$('#hBtn3').click(function(){
-    resultLat = parseInt(sHistory.h3.lat);
-    resultLon = parseInt(sHistory.h3.lon);
-    resultCity = sHistory.h3.name;
-    resultState = sHistory.h3.state;
-    resultCountry = sHistory.h3.country;
-    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
-    getWeather(passArray)
-})
+    $('#hBtn2').click(function(){
+        resultLat = parseInt(sHistory.h2.lat);
+        resultLon = parseInt(sHistory.h2.lon);
+        resultCity = sHistory.h2.name;
+        resultState = sHistory.h2.state;
+        resultCountry = sHistory.h2.country;
+        var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+        listHistory.append(sHistory.Display2)
+        getWeather(passArray)
+    })
 
-$('#hBtn4').click(function(){
-    resultLat = parseInt(sHistory.h4.lat);
-    resultLon = parseInt(sHistory.h4.lon);
-    resultCity = sHistory.h4.name;
-    resultState = sHistory.h4.state;
-    resultCountry = sHistory.h4.country;
-    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
-    getWeather(passArray)
-})
+    $('#hBtn3').click(function(){
+        resultLat = parseInt(sHistory.h3.lat);
+        resultLon = parseInt(sHistory.h3.lon);
+        resultCity = sHistory.h3.name;
+        resultState = sHistory.h3.state;
+        resultCountry = sHistory.h3.country;
+        var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+        listHistory.append(sHistory.Display3)
+        getWeather(passArray)
+    })
 
-$('#hBtn5').click(function(){
-    resultLat = parseInt(sHistory.h5.lat);
-    resultLon = parseInt(sHistory.h5.lon);
-    resultCity = sHistory.h5.name;
-    resultState = sHistory.h5.state;
-    resultCountry = sHistory.h5.country;
-    var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
-    getWeather(passArray)
-})
+    $('#hBtn4').click(function(){
+        resultLat = parseInt(sHistory.h4.lat);
+        resultLon = parseInt(sHistory.h4.lon);
+        resultCity = sHistory.h4.name;
+        resultState = sHistory.h4.state;
+        resultCountry = sHistory.h4.country;
+        var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+        listHistory.append(sHistory.Display4)
+        getWeather(passArray)
+    })
 
-function citySearch() {
+    $('#hBtn5').click(function(){
+        resultLat = parseInt(sHistory.h5.lat);
+        resultLon = parseInt(sHistory.h5.lon);
+        resultCity = sHistory.h5.name;
+        resultState = sHistory.h5.state;
+        resultCountry = sHistory.h5.country;
+        var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
+        listHistory.append(sHistory.Display5)
+        getWeather(passArray)
+    })
+}
+
+function citySearch(search) {
     var urlString = document.location.search;
     var cityName = urlString.split('&')[0];
 
     if (cityName) {
         getCity(cityName);
     } else {
-        document.location.replace('./index.html');
+        getCity(search);
     }
 }
 
@@ -310,7 +319,7 @@ function getWeather(passArray) {
     })
 }
 
-sBtn.click(citySearch())
+sBtn.click(citySearch($('#search')))
 gBtn.click(function(){
     var o = cityOptions.find(":selected").val()
 
@@ -335,6 +344,8 @@ gBtn.click(function(){
 
     var passArray = [resultLat, resultLon, resultCity, resultState, resultCountry]
     getWeather(passArray)
+
+    buttonCall()
 })
 
 })
