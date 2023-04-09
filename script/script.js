@@ -1,7 +1,6 @@
 $(document).ready(function () {
 var display = $('.stats')
 var currentCity = $('.currentCity') 
-var cityQuery = $('#search')
 var sBtn = $('#sBtn')
 var gBtn = $('#gBtn')
 var cityValidation = $('#cityValidation')
@@ -9,6 +8,7 @@ var cityOptions = $('#cityOptions')
 var listHistory = $("#sHistory")
 var cityArray = []
 
+//creates local storage if it doesn't already exist, so when it is called later there isn't an error even if it is empty
 if (!localStorage.getItem("sHistory")) {
     var sHistory = {
         h1: [],
@@ -26,6 +26,9 @@ if (!localStorage.getItem("sHistory")) {
 } else {
     var sHistory = JSON.parse(localStorage.getItem("sHistory"));
 };
+
+
+//if history exists in local storage, appends buttons on page refresh
 listHistory.append(sHistory.Display1)
 listHistory.append(sHistory.Display2)
 listHistory.append(sHistory.Display3)
@@ -109,10 +112,10 @@ function citySearch(search) {
     }
 }
 
-
+//fetches cities by name in an api call, then passes to option pick UI
 function getCity(cityName) {
-    var apiGeo = 'http://api.openweathermap.org/geo/1.0/direct' + cityName + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
-    apiGeo = apiGeo.replace("search", "q");
+    var apiGeo = 'https://api.openweathermap.org/geo/1.0/direct' + cityName + '&limit=5&appid=0ab16bd9ca1ea598f1fc384ead80bb3a';
+    // apiGeo = apiGeo.replace("search", "q");
 
     fetch(apiGeo).then(function (response) {
         if (response.ok) {
@@ -123,6 +126,8 @@ function getCity(cityName) {
     })
 }
 
+//provides some feedback on city count returned, max available from api is 5
+//sets available cities based on name search to an option picker
 function displayCities(cities) {
 
     if (cities.length === 0) {
@@ -133,34 +138,38 @@ function displayCities(cities) {
     } else {
     cityValidation.text('Multiple cities found.  Select one:');
     }
+    $(".sOptions").remove();
     for (var i = 0; i < cities.length; i++) {
         cityOptions.append('<option>' + cities[i].name + ' ' + cities[i].state + ' Country: ' + cities[i].country + '</option>');
         cityOptions.children().eq(i).attr('value', i)
-        cityArray.push(cities[i])
+        cityOptions.children().eq(i).addClass('sOptions')
+        cityArray[i] = cities[i]
     }
-
+    return cityArray;
 }
 
+//associated with Get Weather button & history buttons
+//clears all information about most recent city search
+//takes the array pass from either button, and uses it's values to populate the page
 function getWeather(passArray) {
         $(".removeThis").remove();
-        
+
         resultLat = passArray[0];
         resultLon = passArray[1];
         resultCity = passArray[2];
         resultState = passArray[3];
         resultCountry = passArray[4];
-        
-        var apiUrl = 'http://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
+
+        var apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + resultLat + '&lon=' + resultLon + '&appid=0ab16bd9ca1ea598f1fc384ead80bb3a'; 
         
         fetch(apiUrl).then(function (response) {
             return response.json();
         })
         .then(function (data) {
         resultIcon = data.list[0].weather[0].icon
-        console.log(data.list[0])
         display.append('<li>' + resultCity + " " + resultState + " " + resultCountry + " - " + dayjs.unix(data.list[0].dt).format("h" + "A" + "  (" + 'MMM' + " " + "D" + ", " + "YYYY" + ")") + '</li><span></span>');
         
-        display.children('span').append('<img src="http://openweathermap.org/img/wn/' + resultIcon + '@2x.png" />');
+        display.children('span').append('<img src="https://openweathermap.org/img/wn/' + resultIcon + '@2x.png" />');
         display.children().children('img').attr("id", "todayIcon")
         $('#todayIcon').width(60);
         $('#todayIcon').height(60);
@@ -172,6 +181,7 @@ function getWeather(passArray) {
         display.children().eq(0).addClass("fs-3 fw-bold");
         currentCity.text(resultCity + " ");
 
+//iterates all five day forecast stats based on a dayjs call and a for loop with values calculated below
         for (i=1;i<6;i++) {
             var futureStats = $('.day' + i)
             $('.futureStats').eq(i-1).append('<strong>' + dayjs.unix(data.list[0].dt).add(i, 'day').format('MMM' + " " + "D" + ", " + "YYYY") + "</strong>" + "<span></span>");
@@ -186,10 +196,9 @@ function getWeather(passArray) {
             futureStats.children().eq(0).removeClass("removeThis");
             futureStats.children().eq(0).children('span').addClass('icon');
             futureStats.children().eq(0).children('span').attr("id", "varIcon" + i);
-
-
         }
-    
+
+//variable sets for calculations of five day forecast
         let dayOneCount = 0;
         let dayTwoCount = 0;
         let dayThreeCount = 0;
@@ -216,7 +225,9 @@ function getWeather(passArray) {
         let dayFiveWind = 0;
         let dayFiveIcon = [];
         i = 0;
-        
+
+//loop to add values based on the difference between today and the date in the call
+//uses dayjs and data from the weather api call to group together days
         while (i<data.list.length) {
             today = dayjs.unix(data.list[0].dt).date();
             varDay = dayjs.unix(data.list[i].dt);
@@ -258,9 +269,11 @@ function getWeather(passArray) {
                     dayFiveCount = dayFiveCount + 1;
                 }
             }
-            
             i++;
         };
+
+//averages temp, wind, and humidity for each day based on while loop above
+//icons couldn't be averaged, so the median icon is taken to represent the forecast day
         varTemp1 = (dayOneTemp/dayOneCount).toFixed(2);
         $('#varTemp1').text(varTemp1);
         varWind1 = (dayOneWind/dayOneCount).toFixed(2);
@@ -268,7 +281,7 @@ function getWeather(passArray) {
         varHum1 = (dayOneHum/dayOneCount).toFixed(2);
         $('#varHum1').text(varHum1);
         getIcon = dayOneIcon[parseInt(dayOneIcon.length/2)]
-        $('#varIcon1').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon1').append('<img src="https://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
         $('#varIcon1').children().width(50);
         $('#varIcon1').children().height(50);
 
@@ -279,7 +292,7 @@ function getWeather(passArray) {
         varHum2 = (dayTwoHum/dayTwoCount).toFixed(2);
         $('#varHum2').text(varHum2);
         getIcon = dayTwoIcon[parseInt(dayTwoIcon.length/2)]
-        $('#varIcon2').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon2').append('<img src="https://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
         $('#varIcon2').children().width(50);
         $('#varIcon2').children().height(50);
 
@@ -290,7 +303,7 @@ function getWeather(passArray) {
         varHum3= (dayThreeHum/dayThreeCount).toFixed(2);
         $('#varHum3').text(varHum3);
         getIcon = dayThreeIcon[parseInt(dayThreeIcon.length/2)]
-        $('#varIcon3').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon3').append('<img src="https://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
         $('#varIcon3').children().width(50);
         $('#varIcon3').children().height(50);
 
@@ -301,7 +314,7 @@ function getWeather(passArray) {
         varHum4 = (dayFourHum/dayFourCount).toFixed(2);
         $('#varHum4').text(varHum4);
         getIcon = dayFourIcon[parseInt(dayFourIcon.length/2)]
-        $('#varIcon4').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon4').append('<img src="https://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
         $('#varIcon4').children().width(50);
         $('#varIcon4').children().height(50);
 
@@ -312,7 +325,7 @@ function getWeather(passArray) {
         varHum5 = (dayFiveHum/dayFiveCount).toFixed(2);
         $('#varHum5').text(varHum5);
         getIcon = dayFiveIcon[parseInt(dayFiveIcon.length/2)]
-        $('#varIcon5').append('<img src="http://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
+        $('#varIcon5').append('<img src="https://openweathermap.org/img/wn/' + getIcon + '@2x.png" />');
         $('#varIcon5').children().width(50);
         $('#varIcon5').children().height(50);
         
@@ -322,7 +335,6 @@ function getWeather(passArray) {
 sBtn.click(citySearch($('#search')))
 gBtn.click(function(){
     var o = cityOptions.find(":selected").val()
-
         resultLat = parseInt(cityArray[o].lat);
         resultLon = parseInt(cityArray[o].lon);
         resultCity = cityArray[o].name;
@@ -339,6 +351,7 @@ gBtn.click(function(){
         sHistory.Display2 = sHistory.Display1
         sHistory.h1 = cityArray[o]
         sHistory.Display1 = '<li><button>' + sHistory.h1.name + ", " + sHistory.h1.state + " - " + sHistory.h1.country + '</button></li>'
+        setHistory();
 
         localStorage.setItem("sHistory", JSON.stringify(sHistory));
 
